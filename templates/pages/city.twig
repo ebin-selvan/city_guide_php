@@ -1,0 +1,95 @@
+{% extends 'main.twig' %}
+{% block content %}
+<style>
+  body {
+    background-color: #ffffff;
+    /* White background */
+  }
+
+  .danger-bg {
+    background-color: #dc3545;
+    /* Bootstrap danger color */
+    color: white;
+    /* Text color for contrast */
+  }
+
+  .attraction-card {
+    margin-bottom: 20px;
+  }
+
+  .card {
+    border: none;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .card img {
+    border-bottom: 5px solid #dc3545;
+    /* Add a border to the image */
+  }
+
+  .city-details {
+    margin-bottom: 30px;
+  }
+
+  .city-details img {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 24px;
+  }
+
+  .attraction-title {
+    font-weight: bold;
+    font-size: 1.25rem;
+  }
+</style>
+
+<div class="container mt-4">
+  <div id="cityDetails" class="text-center city-details"></div>
+  <h2 class="danger-bg text-center p-3 rounded mb-3">Attractions</h2>
+  <div id="attractions" class="row"></div>
+</div>
+
+<script>
+  const token = localStorage.getItem('access_token');
+  const cityId = '{{ cityId }}';
+  fetch(`{{api_host}}/api/cities/${cityId}/`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    }
+  })
+    .then(response => response.json())
+    .then(data => {
+      // Show city details
+      const city = data[0].city; // Assuming the first object holds the city details
+      const cityDetailsHtml = `
+                    <h1>${city.name}</h1>
+                    <img src="${city.image}" alt="${city.name}" card-img-top img-fluid style="height: 400px; object-fit: cover;">
+                    <p class="p-3" style="max-width: 600px; margin: 0 auto; text-align: center; word-wrap: break-word;">${city.description}</p>
+                    <p class="text-capitalize">${city.address}</p>
+                `;
+      document.getElementById('cityDetails').innerHTML = cityDetailsHtml;
+
+      // Show attractions
+      const attractions = data.map(item => item.name);
+      const attractionsHtml = attractions.map((attraction, index) => {
+        const attractionData = data[index];
+        return `
+                        <div class="col-md-4">
+                            <div class="card attraction-card shadow-sm">
+                                <img src="${attractionData.image}" class="card-img-top img-fluid" alt="${attractionData.name}" style="height: 250px; object-fit: cover;" />
+                                <div class="card-body">
+                                    <h5 class="card-title attraction-title">${attraction}</h5>
+                                    <p class="card-text">${attractionData.description}</p>
+                                    <p class="card-text"><small class="text-muted">${attractionData.address}</small></p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+      }).join('');
+      document.getElementById('attractions').innerHTML = attractionsHtml;
+    })
+    .catch(error => console.error('Error fetching data:', error));
+</script>
+{% endblock content %}

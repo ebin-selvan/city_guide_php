@@ -1,0 +1,53 @@
+{% extends 'main.twig' %}
+{% block content %}
+<section style="padding-top: 10rem; padding-bottom: 10rem" class="text-center bg-danger text-white">
+  <h1 class="display-4">Where to Go?</h1>
+  <p class="lead">Build a trip in minutes, start your journey</p>
+  <div class="container">
+    <input type="text" class="form-control form-control-lg" placeholder="Search for cities" />
+  </div>
+</section>
+
+<!-- Categories Section -->
+<div class="container category-section">
+  <div id="categories" class="row">
+
+  </div>
+</div>
+<script>
+  const token = localStorage.getItem('access_token');
+
+  fetch('{{api_host}}/api/categories', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    }
+  })
+    .then(response => response.json())
+    .then(data => {
+      const container = document.querySelector('#categories');
+      data.forEach(category => {
+        const div = document.createElement('div');
+        div.className = 'col-md-3 mb-4';
+        div.innerHTML = `
+        <div class="category-card" style="cursor: pointer;">
+          ${category.name}
+        </div>`;
+        div.querySelector('.category-card').addEventListener('mouseover', function () {
+          this.style.backgroundColor = 'red';
+          this.style.color = 'white';
+        });
+        div.querySelector('.category-card').addEventListener('mouseout', function () {
+          this.style.backgroundColor = '';
+          this.style.color = '';
+        });
+        div.querySelector('.category-card').addEventListener('click', function () {
+          window.location.href = '/category/' + category.id;
+        });
+        container.appendChild(div);
+      });
+    })
+    .catch(error => console.error('Error fetching categories:', error));
+</script>
+{% endblock content %}

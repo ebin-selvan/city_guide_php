@@ -1,0 +1,73 @@
+{% extends 'main.twig' %}
+{% block content %}
+<style>
+  body {
+    background-color: white;
+  }
+
+  .card {
+    border: 1px solid #dc3545;
+    /* Danger color */
+  }
+
+  .card-header {
+    background-color: #dc3545;
+    /* Danger color */
+    color: white;
+  }
+</style>
+
+<div class="container my-5">
+  <div class="row">
+    <div class="col-md-8 offset-md-2">
+      <div class="card">
+        <div class="card-header">
+          <h2 class="text-center"></h2>
+        </div>
+        <div class="card-body">
+          <img src="" class="img-fluid rounded mx-auto d-block" alt="" style="height: 400px; object-fit: cover;">
+          <h3 class="mt-3">Description</h3>
+          <p class="description"></p>
+          <h3 class="mt-4">Address</h3>
+          <p class="address"></p>
+          <h3 class="mt-4">Category</h3>
+          <p class="category text-danger"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const token = localStorage.getItem('access_token');
+
+  document.addEventListener('DOMContentLoaded', function () {
+    const attractionId = '{{attractionId}}';
+
+    fetch(`{{api_host}}/api/attractions/${attractionId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
+    })
+      .then(response => response.json())
+      .then(data => {
+        document.querySelector('.card-header h2').textContent = data.name;
+        document.querySelector('.card-body img').src = data.image;
+        document.querySelector('.card-body img').alt = data.name;
+        document.querySelector('.card-body .description').textContent = data.description;
+        document.querySelector('.card-body .address').innerHTML = data.address.replace(/\r\n/g, '<br>');
+        document.querySelector('.card-body').insertAdjacentHTML('beforeend', `
+          <h3 class="mt-4">City</h3>
+          <p class="city text-danger">${data.city.name} -
+            <a href="/city/${data.city.id}" class="text-danger">See more from this City</a>
+          </p>
+        `);
+        document.querySelector('.card-body .category').innerHTML = `${data.category.name} - <a href="/category/${data.category.id}" class="text-danger">See more in this category</a>`;
+      })
+      .catch(error => console.error('Error fetching attraction data:', error));
+  });
+</script>
+
+{% endblock content %}

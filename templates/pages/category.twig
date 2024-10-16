@@ -1,0 +1,49 @@
+{% extends 'main.twig' %}
+{% block content %}
+<div class="bg-danger vh-100">
+  <div class="container py-5">
+    <h2 id="category-name" class="text-center mb-4 text-white"></h2>
+    <div class="row" id="attractions"></div>
+    <h1 id="no-attractions" class="text-center text-white mt-5" style="display: none;">There are no cities or places in
+      this
+      category.</h1>
+    <!-- Dynamic content will be inserted here -->
+  </div>
+</div>
+</div>
+<script>
+  const token = localStorage.getItem('access_token');
+  const categoryId = '{{ categoryId }}';
+
+  fetch(`{{api_host}}/api/categories/${categoryId}/attractions`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    }
+  })
+    .then(response => response.json())
+    .then(data => {
+      if (data.length > 0) {
+        document.querySelector('#category-name').textContent = data[0].category.name;
+        const container = document.querySelector('#attractions');
+        data.forEach(attraction => {
+          const div = document.createElement('div');
+          div.className = 'col-md-4 mb-4';
+          div.innerHTML = `
+            <a href="/attractions/${attraction.id}" class="card bg-white mb-3 text-decoration-none text-dark">
+            <img src="${attraction.image}" class="card-img-top img-fluid" alt="${attraction.name}" style="height: 250px; object-fit: cover;" />
+            <div class="card-body">
+              <h5 class="card-title">${attraction.name}</h5>
+              <p class="card-text">${attraction.address}</p>
+            </div>
+            </a>`;
+          container.appendChild(div);
+        });
+      } else {
+        document.querySelector('#no-attractions').style.display = 'block';
+      }
+    })
+    .catch(error => console.error('Error fetching attractions:', error));
+</script>
+{% endblock content %}
