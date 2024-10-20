@@ -1,0 +1,44 @@
+{% extends 'main.twig' %}
+{% block content %}
+<div class="bg-danger vh-100">
+  <div class="container py-5">
+    <h2 class="text-center mb-4 text-white">Cities</h2>
+    <div class="row" id="cities"></div>
+    <!-- Dynamic content will be inserted here -->
+  </div>
+</div>
+</div>
+<script>
+  const token = localStorage.getItem('access_token');
+
+  fetch(`{{api_host}}/api/cities/`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    }
+  })
+    .then(response => response.json())
+    .then(data => {
+      if (data.length > 0) {
+        const container = document.querySelector('#cities');
+        data.forEach(city => {
+          const div = document.createElement('div');
+          div.className = 'col-md-4 mb-4';
+          div.innerHTML = `
+            <a href="/cities/${city.id}" class="card bg-white mb-3 text-decoration-none text-dark">
+            <img src="${city.image}" class="card-img-top img-fluid" alt="${city.name}" style="height: 250px; object-fit: cover;" />
+            <div class="card-body">
+              <h5 class="card-title">${city.name}</h5>
+              <p class="card-text">${city.address}</p>
+            </div>
+            </a>`;
+          container.appendChild(div);
+        });
+      } else {
+        document.querySelector('#no-attractions').style.display = 'block';
+      }
+    })
+    .catch(error => console.error('Error fetching attractions:', error));
+</script>
+{% endblock content %}

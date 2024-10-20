@@ -28,6 +28,15 @@ switch (true) {
   case $uri === '/register':
     echo $twig->render('pages/signup.twig', ['api_host' => $api_host]);
     break;
+  case $uri === '/about':
+    echo $twig->render('pages/about.twig', ['api_host' => $api_host]);
+    break;
+   case $uri === '/cities':
+    echo $twig->render('pages/cities.twig', ['api_host' => $api_host]);
+    break;
+  case $uri === '/feedback':
+    echo $twig->render('pages/feedback.twig', ['api_host' => $api_host]);
+    break;
   case preg_match('/^\/category\/(\d+)$/', $uri, $matches) === 1:
     $categoryId = $matches[1];
     echo $twig->render('pages/category.twig', ['api_host' => $api_host, 'categoryId' => $categoryId]);

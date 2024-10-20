@@ -1,0 +1,55 @@
+{% extends 'main.twig' %}
+{% block content %}
+<!-- About Section -->
+<section style="height: 100vh; padding-top: 200px;" id="about" class="bg-danger text-white">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8 text-center">
+        <h2 class="display-4 mb-4">About Our City Guide</h2>
+        <p class="lead mb-4">
+          Welcome to your ultimate City Guide, designed to make your exploration easier, more fun, and efficient.
+          Whether you're a tourist looking for hidden gems or a local seeking the latest events, our guide provides
+          up-to-date information on attractions, dining, entertainment, and more. Let us help you uncover everything our
+          vibrant city has to offer!
+        </p>
+        <hr class="my-4 bg-light" />
+        <p class="mb-0">
+          Navigate through our comprehensive sections on nightlife, culture, history, and shopping to personalize your
+          experience and make the most of your visit.
+        </p>
+        <a href="/cities" class="btn btn-outline-light mt-4">Explore Now</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Additional CSS for Modern UI Enhancements -->
+<style>
+  #about h2 {
+    font-weight: 700;
+    letter-spacing: 2px;
+  }
+
+  #about p {
+    font-size: 1.1rem;
+    line-height: 1.7;
+  }
+
+  #about a.btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 50px;
+    font-weight: 600;
+  }
+
+  @media (max-width: 768px) {
+    #about p.lead {
+      font-size: 1rem;
+    }
+
+    #about h2 {
+      font-size: 2.5rem;
+    }
+  }
+</style>
+
+{% endblock content %}
